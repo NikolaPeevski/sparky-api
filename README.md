@@ -6,7 +6,7 @@ The repository can be used as a boiler plate for people interested in using Expr
 ```
 git clone
 npm i
-npm run build && npm run serve
+npm run start
 ```
 
 <!-- 
