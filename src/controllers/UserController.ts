@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
 } from "routing-controllers";
+import { ConnectionService } from "../util/ConnectionService";
 
 @Controller()
 export class UserController {
@@ -33,5 +34,11 @@ export class UserController {
   @Delete("/users/:id")
   remove(@Param("id") id: number) {
     return "Removing user...";
+  }
+
+  @Get("/users/:id")
+  async getOrCreate(@Param("id") id: number) {
+    // const connection = new ConnectionService();
+    // await connection.initConnection();
   }
 }

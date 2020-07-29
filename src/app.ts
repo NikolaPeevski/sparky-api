@@ -1,50 +1,66 @@
-import express from "express";
-import compression from "compression";  // compresses requests
-import session from "express-session";
-import bodyParser from "body-parser";
-import lusca from "lusca";
-import path from "path";
-import passport from "passport";
-import bluebird from "bluebird";
+import { Express } from 'express';
+import compression from 'compression'; // compresses requests
+import bodyParser from 'body-parser';
+import lusca from 'lusca';
+import 'reflect-metadata'; // this shim is required
 
-import "reflect-metadata"; // this shim is required
-import { createExpressServer } from "routing-controllers";
-import { UserController } from "./Controllers/UserController";
+import {
+  createExpressServer,
+  getMetadataArgsStorage,
+  RoutingControllersOptions,
+} from 'routing-controllers';
+import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
+import { routingControllersToSpec } from 'routing-controllers-openapi';
+import * as swaggerUiExpress from 'swagger-ui-express';
 
-// Controllers (route handlers)
-import * as homeController from "./controllers/home";
-// import * as userController from "./controllers/user";
-import * as apiController from "./controllers/api";
-import * as contactController from "./controllers/contact";
+import { createConnection } from 'typeorm';
+import { UserController } from './Controllers/UserController';
 
-
+// import session from "express-session";
+// import path from "path";
+// import passport from "passport";
+// import bluebird from "bluebird";
 // API keys and Passport configuration
-import * as passportConfig from "./config/passport";
+// import * as passportConfig from "./config/passport";
+
+const routingControllersOptions: RoutingControllersOptions = {
+  controllers: [UserController],
+  routePrefix: '/api',
+};
 
 // Create Express server
 // creates express app, registers all controller routes and returns you express app instance
-const app = createExpressServer({
-   controllers: [UserController] // we specify controllers we want to use
+const app: Express = createExpressServer(routingControllersOptions);
+
+// Parse class-validator classes into JSON Schema:
+const schemas = validationMetadatasToSchemas({
+  refPointerPrefix: '#/components/schemas/',
 });
 
-// Connect to MongoDB
-// const mongoUrl = MONGODB_URI;
-// mongoose.Promise = bluebird;
+// Parse routing-controllers classes into OpenAPI spec:
+const storage = getMetadataArgsStorage();
+const spec = routingControllersToSpec(storage, routingControllersOptions, {
+  components: {
+    schemas,
+  },
+  info: {
+    description: 'Generated with `routing-controllers-openapi`',
+    title: 'A sample spec API',
+    version: '0.0.1',
+  },
+});
 
-// mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(
-//     () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
-// ).catch(err => {
-//     console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
-//     // process.exit();
-// });
-
+// TODO: Include env file
 // Express configuration
-app.set("port", process.env.PORT || 3000);
-// app.set("views", path.join(__dirname, "../views"));
-// app.set("view engine", "pug");
+app.set('port', process.env.PORT || 3000);
+
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/', swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
+
+// TODO: Setup passport
 // app.use(session({
 //     resave: true,
 //     saveUninitialized: true,
@@ -56,51 +72,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // }));
 // app.use(passport.initialize());
 // app.use(passport.session());
-app.use(lusca.xframe("SAMEORIGIN"));
+
+app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
-// app.use((req, res, next) => {
-//     res.locals.user = req.user;
-//     next();
-// });
-// app.use((req, res, next) => {
-//     // After successful login, redirect back to the intended page
-//     if (!req.user &&
-//     req.path !== "/login" &&
-//     req.path !== "/signup" &&
-//     !req.path.match(/^\/auth/) &&
-//     !req.path.match(/\./)) {
-//         req.session.returnTo = req.path;
-//     } else if (req.user &&
-//     req.path == "/account") {
-//         req.session.returnTo = req.path;
-//     }
-//     next();
-// });
-
-// app.use(
-//     express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
-// );
-
-/**
- * Primary app routes.
- */
-// app.get("/", homeController.index);
-// app.get("/login", userController.getLogin);
-// app.post("/login", userController.postLogin);
-// app.get("/logout", userController.logout);
-// app.get("/forgot", userController.getForgot);
-// app.post("/forgot", userController.postForgot);
-// app.get("/reset/:token", userController.getReset);
-// app.post("/reset/:token", userController.postReset);
-// app.get("/signup", userController.getSignup);
-// app.post("/signup", userController.postSignup);
-// app.get("/contact", contactController.getContact);
-// app.post("/contact", contactController.postContact);
-// app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
-// app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
-// app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
-// app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
-// app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 /**
  * API examples routes.
@@ -115,5 +89,14 @@ app.use(lusca.xssProtection(true));
 // app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
 //     res.redirect(req.session.returnTo || "/");
 // });
+
+createConnection()
+  .then(async () => {
+    console.log('Database connection established!');
+  })
+  .catch((error) => {
+    console.error('Unable to establish a connection to the database');
+    throw new Error(error);
+  });
 
 export default app;
