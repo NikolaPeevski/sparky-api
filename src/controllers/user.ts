@@ -81,7 +81,8 @@
 //  */
 // export const postSignup = async (req: Request, res: Response, next: NextFunction) => {
 //     await check("email", "Email is not valid").isEmail().run(req);
-//     await check("password", "Password must be at least 4 characters long").isLength({ min: 4 }).run(req);
+//     await check("password",
+// "Password must be at least 4 characters long").isLength({ min: 4 }).run(req);
 //     await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
 //     // eslint-disable-next-line @typescript-eslint/camelcase
 //     await sanitize("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
@@ -153,7 +154,7 @@
 //         user.save((err: WriteError) => {
 //             if (err) {
 //                 if (err.code === 11000) {
-//                     req.flash("errors", { msg: "The email address you have entered is already associated with an account." });
+// req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
 //                     return res.redirect("/account");
 //                 }
 //                 return next(err);

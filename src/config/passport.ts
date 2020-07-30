@@ -1,11 +1,11 @@
-import passport from "passport";
-import passportLocal from "passport-local";
-import passportFacebook from "passport-facebook";
-import _ from "lodash";
+import passport from 'passport';
+import passportLocal from 'passport-local';
+import passportFacebook from 'passport-facebook';
+import _ from 'lodash';
 
 // import { User, UserType } from '../models/User';
 // import { User, UserDocument } from "../models/User";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
 const FacebookStrategy = passportFacebook.Strategy;
@@ -19,7 +19,6 @@ const FacebookStrategy = passportFacebook.Strategy;
 //         done(err, user);
 //     });
 // });
-
 
 /**
  * Sign in using Email and Password.
@@ -40,7 +39,6 @@ const FacebookStrategy = passportFacebook.Strategy;
 //     });
 // }));
 
-
 /**
  * OAuth Strategy Overview
  *
@@ -55,7 +53,6 @@ const FacebookStrategy = passportFacebook.Strategy;
  *       - If there is, return an error message.
  *       - Else create a new account.
  */
-
 
 /**
  * Sign in with Facebook.
@@ -121,10 +118,10 @@ const FacebookStrategy = passportFacebook.Strategy;
  * Login Required middleware.
  */
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
 };
 
 /**

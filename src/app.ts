@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import lusca from 'lusca';
 import 'reflect-metadata'; // this shim is required
 import cors from 'cors';
+import helmet from 'helmet';
 
 import winston from 'winston';
 import expressWinston from 'express-winston';
@@ -62,6 +63,7 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(helmet());
 
 app.use(
   expressWinston.logger({
@@ -81,10 +83,6 @@ app.use(
     // Color the text and status code, using the Express/morgan color palette
     // (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
     colorize: false,
-    // optional: allows to skip some log messages based on request and/or response
-    ignoreRoute(req, res) {
-      return false;
-    },
   }),
 );
 

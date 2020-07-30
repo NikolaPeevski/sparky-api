@@ -116,26 +116,6 @@ Don't forget to return the `MONGO_URI_LOCAL` to your local test database (if you
 1. Navigate to [SendGrid's Website](https://sendgrid.com/), sign up for a free account, and complete the verification process.
 2. Open your `.env` file and update `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` with your SendGrid username and password respectively.
 
-## Deploying to Azure App Service
-Deploying from VS Code can be broken into the following steps:
-1. Authenticate your Azure account in VS Code
-2. Build your app
-3. Zip deploy using the Azure App Service extension
-
-### Sign in to your Azure account
-1. Open VS Code
-2. Expand the Azure App Service menu in the explorer menu
-    - If you don't see this, you might not have the `Azure App Service` extension installed.
-    See the pre-reqs section.
-3. Click `Sign in to Azure...`
-4. Choose `Copy & Open` from the resulting dialog
-    - This will open `aka.ms/devicelogin` in a browser window.
-    If it doesn't, just navigate there manually.
-5. Paste in the code that is on your clipboard.
-6. Go back to VS Code, you should now be signed in.
-You can confirm that everything worked by seeing your Azure subscription listed in the Azure App Service section of the explorer window.
-Additionally you should see the email associated with your account listed in the status bar at the bottom of VS Code.
-
 ### Build the app
 Building the app locally is required to generate a zip to deploy because the App Service won't execute build tasks.
 Build the app however you normally would:
