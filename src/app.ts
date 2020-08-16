@@ -19,8 +19,10 @@ import { routingControllersToSpec } from 'routing-controllers-openapi';
 import * as swaggerUiExpress from 'swagger-ui-express';
 
 import { createConnection } from 'typeorm';
-import { UserController } from './Controllers/UserController';
+import * as AuthUtils from './util/AuthHelper.util';
 
+import { UserController } from './controllers/User.controller';
+import { AuthController } from './controllers/Auth.controller';
 // import session from "express-session";
 // import path from "path";
 // import passport from "passport";
@@ -29,8 +31,9 @@ import { UserController } from './Controllers/UserController';
 // import * as passportConfig from "./config/passport";
 
 const routingControllersOptions: RoutingControllersOptions = {
-  controllers: [UserController],
+  controllers: [AuthController, UserController],
   routePrefix: '/api',
+  authorizationChecker: AuthUtils.default.authHandler,
 };
 
 // Create Express server
