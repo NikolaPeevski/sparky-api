@@ -23,6 +23,7 @@ import * as AuthUtils from './util/AuthHelper.util';
 
 import { UserController } from './controllers/User.controller';
 import { AuthController } from './controllers/Auth.controller';
+import UserEntity from './entity/ApplicationEntities/User.entity';
 // import session from "express-session";
 // import path from "path";
 // import passport from "passport";
@@ -123,9 +124,15 @@ app.use(lusca.xssProtection(true));
 
 createConnection()
   .then(async () => {
-    console.log('Database connection established!');
+    const user = new UserEntity();
+    user.username = 'gotinpi499';
+    user.firstName = 'Ivan';
+    user.lastName = 'Petrov';
+    user.age = 25;
+    await user.save();
   })
   .catch((error) => {
+    console.error(error);
     console.error('Unable to establish a connection to the database');
     throw new Error(error);
   });

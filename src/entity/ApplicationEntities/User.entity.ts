@@ -16,7 +16,9 @@ export default class UserEntity extends BaseEntity {
   @Column({})
   username: string;
 
-  @Column({})
+  @Column({
+    nullable: true,
+  })
   password: string;
 
   @Column()
@@ -30,14 +32,19 @@ export default class UserEntity extends BaseEntity {
   })
   age: number;
 
-  @BeforeInsert()
-  async hashPassword(): Promise<void> {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+  @Column({
+    nullable: true,
+  })
+  location: string;
 
-  async comparePassword(attempt: string): Promise<boolean> {
-    return await bcrypt.compare(attempt, this.password);
-  }
+  // @BeforeInsert()
+  // async hashPassword(): Promise<void> {
+  //   this.password = await bcrypt.hash(this.password, 10);
+  // }
+
+  // async comparePassword(attempt: string): Promise<boolean> {
+  //   return await bcrypt.compare(attempt, this.password);
+  // }
 
   toResponseObject(showToken: boolean = true): UserModel {
     const {
