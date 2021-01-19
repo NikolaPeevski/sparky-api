@@ -35,7 +35,7 @@ export default class UserEntity extends BaseEntity {
   @Column({
     nullable: true,
   })
-  location: string;
+  locationTest: string;
 
   // @BeforeInsert()
   // async hashPassword(): Promise<void> {

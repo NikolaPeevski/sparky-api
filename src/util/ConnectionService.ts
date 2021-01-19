@@ -1,9 +1,9 @@
 import { createConnection, Connection } from 'typeorm';
 
-export class ConnectionService {
+export default class ConnectionService {
   private connection: Connection;
 
-  async initConnection() {
+  async initConnection(): Promise<void> {
     this.connection = await createConnection({
       type: 'mysql',
       host: 'localhost',
@@ -14,7 +14,11 @@ export class ConnectionService {
     });
   }
 
-  getConnection(): Connection {
+  async getConnection(): Promise<Connection> {
+    if (this.connection) {
+      return this.connection;
+    }
+    await this.initConnection();
     return this.connection;
   }
 }
